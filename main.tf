@@ -70,12 +70,11 @@ resource "vsphere_virtual_machine" "vm" {
   }
 
   # VM options
-  firmware = "bios"
+  firmware = var.firmware
 
   # Enable disk UUID for better disk management
   enable_disk_uuid = true
 
   # VM tools
-  wait_for_guest_net_timeout = 0
-  wait_for_guest_ip_timeout  = 0
+  wait_for_guest_net_timeout = 5
 }

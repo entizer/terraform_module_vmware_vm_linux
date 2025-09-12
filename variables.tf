@@ -42,3 +42,9 @@ variable "vm_disk_size" {
   description = "Disk size in GB"
   type        = number
 }
+
+variable "firmware" {
+  description = "BIOS or EFI"
+  type        = string
+  default     = "efi"
+}
