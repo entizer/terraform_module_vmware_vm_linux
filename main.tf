@@ -35,7 +35,7 @@ resource "vsphere_virtual_machine" "vm" {
 
   guest_id = data.vsphere_virtual_machine.template.guest_id
 
-  # Network interface with VMXNET3
+  #Primary network interface
   network_interface {
     network_id   = data.vsphere_network.network.id
     adapter_type = "vmxnet3"
@@ -53,20 +53,21 @@ resource "vsphere_virtual_machine" "vm" {
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
 
-    # customize {
-    #   linux_options {
-    #     host_name = var.vm_name
-    #     domain    = "ad.kg-tech.rocks"
-    #   }
+    customize {
+      linux_options {
+        host_name = var.vm_name
+        domain    = "ad.kg-tech.rocks"
+      }
 
-    #   network_interface {
-    #   #     ipv4_address = "192.168.1.100"  # Change to your desired IP
-    #   #     ipv4_netmask = 24
-    #   }
+      network_interface {
+          ipv4_address = var.use_static_ips == false ? null : var.primary_static_ip.ip_address
+          ipv4_netmask = var.use_static_ips == false ? null : var.primary_static_ip.netmask
+      }
 
-    #   #   ipv4_gateway = "192.168.1.1"  # Change to your gateway
-    #   #   dns_server_list = ["8.8.8.8", "8.8.4.4"]
-    # }
+      ipv4_gateway = var.use_static_ips == false ? null : var.default_gateway
+      dns_server_list = var.use_static_ips == false ? null : var.dns_servers
+      dns_suffix_list = var.use_static_ips == false ? null : ["ad.kg-tech.rocks"]
+    }
   }
 
   # VM options

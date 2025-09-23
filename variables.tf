@@ -48,3 +48,50 @@ variable "firmware" {
   type        = string
   default     = "efi"
 }
+
+variable "use_static_ips" {
+  type = bool
+  default = false
+}
+
+variable "primary_static_ip" {
+  description = "IP addresses and netmask to manually assign"
+  type        = object({
+    ip_address = string
+    # 24
+    netmask = number
+  })
+  nullable    = true
+  default     = null
+  
+  validation {
+    # If static is disabled (false) then 'true' will be passed and will contiue.
+    # Otherwise, this vairable needs to not be null and is now required.
+    condition     = var.use_static_ips == false ? length(var.primary_static_ip) > 0 : true
+    error_message = "You must specify IP address and netmask (##)."
+  }
+}
+
+variable "default_gateway" {
+  description = "default gateway for the primary NIC"
+  type        = string
+  nullable    = true
+  default     = null
+
+  validation {
+    condition     = var.use_static_ips == false ? var.default_gateway != null : true
+    error_message = "You must specify the gateway for the primary NIC (only)."
+  }
+}
+
+variable "dns_servers" {
+  description = "IP addresses to manually assign"
+  type        = list(string)
+  nullable    = true
+  default     = null
+
+  validation {
+    condition     = var.use_static_ips == false ? var.dns_servers != null : true
+    error_message = "You must specify the gateway for the primary NIC (only)."
+  }
+}
