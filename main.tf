@@ -80,9 +80,9 @@ resource "vsphere_virtual_machine" "vm" {
   wait_for_guest_net_timeout = 5
 
   extra_config = {
-    "guestinfo.metadata"          = base64encode(templatefile("${path.module}/templates/metadata",var.default_gateway))
+    "guestinfo.metadata"          = base64encode(templatefile("${path.module}/templates/metadata",{config = var.default_gateway}))
     "guestinfo.metadata.encoding" = "base64"
-    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata",var.default_gateway))
+    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata",{config = var.default_gateway}))
     "guestinfo.userdata.encoding" = "base64"
   }
 }
