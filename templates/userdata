@@ -1,0 +1,4 @@
+#cloud-config
+hostname: webProxy
+fqdn: webProxy.ad.kg-tech.rocks
+manage_etc_hosts: true

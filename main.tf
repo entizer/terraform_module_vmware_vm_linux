@@ -53,21 +53,21 @@ resource "vsphere_virtual_machine" "vm" {
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
 
-    customize {
-      linux_options {
-        host_name = var.vm_name
-        domain    = "ad.kg-tech.rocks"
-      }
+    # customize {
+    #   linux_options {
+    #     host_name = var.vm_name
+    #     domain    = "ad.kg-tech.rocks"
+    #   }
 
-      network_interface {
-          ipv4_address = var.use_static_ips == false ? null : var.primary_static_ip.ip_address
-          ipv4_netmask = var.use_static_ips == false ? null : var.primary_static_ip.netmask
-      }
+    #   network_interface {
+    #       ipv4_address = var.use_static_ips == false ? null : var.primary_static_ip.ip_address
+    #       ipv4_netmask = var.use_static_ips == false ? null : var.primary_static_ip.netmask
+    #   }
 
-      ipv4_gateway = var.use_static_ips == false ? null : var.default_gateway
-      dns_server_list = var.use_static_ips == false ? null : var.dns_servers
-      dns_suffix_list = var.use_static_ips == false ? null : ["ad.kg-tech.rocks"]
-    }
+    #   ipv4_gateway = var.use_static_ips == false ? null : var.default_gateway
+    #   dns_server_list = var.use_static_ips == false ? null : var.dns_servers
+    #   dns_suffix_list = var.use_static_ips == false ? null : ["ad.kg-tech.rocks"]
+    # }
   }
 
   # VM options
@@ -78,4 +78,11 @@ resource "vsphere_virtual_machine" "vm" {
 
   # VM tools
   wait_for_guest_net_timeout = 5
+
+  extra_config = {
+    "guestinfo.metadata"          = base64encode(templatefile("${path.module}/templates/metadata"))
+    "guestinfo.metadata.encoding" = "base64"
+    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata"))
+    "guestinfo.userdata.encoding" = "base64"
+  }
 }
