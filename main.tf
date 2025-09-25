@@ -90,6 +90,7 @@ resource "vsphere_virtual_machine" "vm" {
     }))
     "guestinfo.metadata.encoding" = "base64"
     "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.tftpl",{
+      vm_name     = var.vm_name
       domain_name = var.domain_name
     }))
     "guestinfo.userdata.encoding" = "base64"
