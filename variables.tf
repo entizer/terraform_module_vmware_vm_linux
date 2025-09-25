@@ -56,20 +56,20 @@ variable "domain_name" {
 }
 
 variable "use_static_ips" {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable "primary_static_ip" {
   description = "IP addresses and netmask to manually assign"
-  type        = object({
+  type = object({
     ip_address = string
     # 24
     netmask = number
   })
-  nullable    = true
-  default     = null
-  
+  nullable = true
+  default  = null
+
   validation {
     # If static is disabled (false) then 'true' will be passed and will contiue.
     # Otherwise, this vairable needs to not be null and is now required.
