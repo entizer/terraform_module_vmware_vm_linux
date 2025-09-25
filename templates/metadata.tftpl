@@ -1,15 +1,19 @@
-instance-id: webProxy
-local-hostname: webProxy
+instance-id: ${vm_name}
+local-hostname: ${vm_name}
 network:
   version: 2
   ethernets:
     ens192:
+      %{ if use_static_ips == true }
       dhcp4: false
       addresses:
         - ${primary_static_ip.ip_address}/${primary_static_ip.netmask}  # CIDR notation
       nameservers:
         addresses: ${jsonencode(dns_servers)}
-        search: ["ad.kg-tech.rocks"]
+        search: ["${domain_name}"]
       routes:
         - to: default
           via: ${default_gateway}
+      %{ else }
+      dhcp4: true
+      %{ endif }
