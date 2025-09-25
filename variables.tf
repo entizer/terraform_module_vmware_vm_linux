@@ -20,10 +20,7 @@ variable "network" {
     # If static is disabled (false) then 'true' will be passed and will contiue.
     # Otherwise, this vairable needs to not be null and is now required.
     condition     = anytrue([
-      for network in keys(locals.networks) : contains([
-        "VLAN100-Servers-DHCP",
-        "VLAN110-Servers-Static"
-      ], network)
+      for network in keys(locals.networks) : contains([var.network], network)
     ])
     error_message = "Network provided is not supported, check the spelling or provide a different network."
   }
