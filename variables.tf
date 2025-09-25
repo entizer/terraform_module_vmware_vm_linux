@@ -49,6 +49,12 @@ variable "firmware" {
   default     = "efi"
 }
 
+variable "domain_name" {
+  # ex. ad.kg-tech.rocks
+  description = "Domain name that will be used for the FQDN and search suffixes"
+  type        = string
+}
+
 variable "use_static_ips" {
   type = bool
   default = false

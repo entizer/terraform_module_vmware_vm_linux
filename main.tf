@@ -80,15 +80,18 @@ resource "vsphere_virtual_machine" "vm" {
   wait_for_guest_net_timeout = 5
 
   extra_config = {
-    "guestinfo.metadata"          = base64encode(templatefile("${path.module}/templates/metadata.tftpl",
-      {
-        primary_static_ip = var.primary_static_ip
-        default_gateway = var.default_gateway
-        dns_servers = var.dns_servers
-      }
-    ))
+    "guestinfo.metadata"          = base64encode(templatefile("${path.module}/templates/metadata.tftpl",{
+      use_static_ips = var.use_static_ips
+      primary_static_ip = var.primary_static_ip
+      default_gateway = var.default_gateway
+      dns_servers = var.dns_servers
+      domain_name = var.domain_name
+      vm_name = var.vm_name
+    }))
     "guestinfo.metadata.encoding" = "base64"
-    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.tftpl",local.primary_ip_info))
+    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.tftpl",{
+      domain_name = var.domain_name
+    }))
     "guestinfo.userdata.encoding" = "base64"
   }
 }
