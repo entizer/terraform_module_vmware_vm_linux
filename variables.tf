@@ -16,6 +16,17 @@ variable "datastore" {
 variable "network" {
   description = "Network name"
   type        = string
+  validation {
+    # If static is disabled (false) then 'true' will be passed and will contiue.
+    # Otherwise, this vairable needs to not be null and is now required.
+    condition     = anytrue([
+      for network in keys(locals.networks) : contains([
+        "VLAN100-Servers-DHCP",
+        "VLAN110-Servers-Static"
+      ], network)
+    ])
+    error_message = "Network provided is not supported, check the spelling or provide a different network."
+  }
 }
 
 variable "template" {
@@ -78,26 +89,39 @@ variable "primary_static_ip" {
   }
 }
 
-variable "default_gateway" {
-  description = "default gateway for the primary NIC"
-  type        = string
-  nullable    = true
-  default     = null
+# variable "default_gateway" {
+#   description = "default gateway for the primary NIC"
+#   type        = string
+#   nullable    = true
+#   default     = null
 
-  validation {
-    condition     = var.use_static_ips == true ? var.default_gateway != null : true
-    error_message = "You must specify the gateway for the primary NIC (only)."
-  }
-}
+#   validation {
+#     condition     = var.use_static_ips == true ? var.default_gateway != null : true
+#     error_message = "You must specify the gateway for the primary NIC (only)."
+#   }
+# }
 
-variable "dns_servers" {
-  description = "IP addresses to manually assign"
-  type        = list(string)
-  nullable    = true
-  default     = null
+# variable "dns_servers" {
+#   description = "IP addresses to manually assign"
+#   type        = list(string)
+#   nullable    = true
+#   default     = null
 
-  validation {
-    condition     = var.use_static_ips == true ? var.dns_servers != null : true
-    error_message = "You must specify the gateway for the primary NIC (only)."
+#   validation {
+#     condition     = var.use_static_ips == true ? var.dns_servers != null : true
+#     error_message = "You must specify the gateway for the primary NIC (only)."
+#   }
+# }
+
+locals {
+  networks = {
+    VLAN100-Servers-DHCP = {
+      default_gateway = null
+      dns_servers = [null]
+    },
+    VLAN110-Servers-Static = {
+      default_gateway = "192.168.110.1"
+      dns_servers = ["192.168.130.14","192.168.130.15"]
+    }
   }
 }
