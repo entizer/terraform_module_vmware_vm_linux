@@ -83,8 +83,8 @@ resource "vsphere_virtual_machine" "vm" {
     "guestinfo.metadata" = base64encode(templatefile("${path.module}/templates/metadata.tftpl", {
       use_static_ips    = var.use_static_ips
       primary_static_ip = var.primary_static_ip
-      default_gateway   = lookup(local.networks[var.network], default_gateway, null)
-      dns_servers       = lookup(local.networks[var.network], dns_servers, null)
+      default_gateway   = lookup(local.networks[var.network], "default_gateway", null)
+      dns_servers       = lookup(local.networks[var.network], "dns_servers", null)
       domain_name       = var.domain_name
       vm_name           = var.vm_name
     }))
