@@ -73,7 +73,7 @@ variable "primary_static_ip" {
   validation {
     # If static is disabled (false) then 'true' will be passed and will contiue.
     # Otherwise, this vairable needs to not be null and is now required.
-    condition     = var.use_static_ips == false ? length(var.primary_static_ip) > 0 : true
+    condition     = var.use_static_ips == true ? var.primary_static_ip != null : true
     error_message = "You must specify IP address and netmask (##)."
   }
 }
@@ -85,7 +85,7 @@ variable "default_gateway" {
   default     = null
 
   validation {
-    condition     = var.use_static_ips == false ? var.default_gateway != null : true
+    condition     = var.use_static_ips == true ? var.default_gateway != null : true
     error_message = "You must specify the gateway for the primary NIC (only)."
   }
 }
@@ -97,7 +97,7 @@ variable "dns_servers" {
   default     = null
 
   validation {
-    condition     = var.use_static_ips == false ? var.dns_servers != null : true
+    condition     = var.use_static_ips == true ? var.dns_servers != null : true
     error_message = "You must specify the gateway for the primary NIC (only)."
   }
 }
