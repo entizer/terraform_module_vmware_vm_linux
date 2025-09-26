@@ -113,8 +113,8 @@ variable "primary_static_ip" {
 locals {
   networks = {
     VLAN100-Servers-DHCP = {
-      default_gateway = null
-      dns_servers = [null]
+      default_gateway = "192.168.100.1"
+      dns_servers = ["192.168.130.14","192.168.130.15"]
     },
     VLAN110-Servers-Static = {
       default_gateway = "192.168.110.1"
